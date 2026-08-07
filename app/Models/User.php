@@ -83,4 +83,6 @@ class User extends Authenticatable implements FilamentUser, HasTenants
             $this->has_email_authentication =$condition;
             $this->save();
         }
+
+
 }
