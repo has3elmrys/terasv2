@@ -31,8 +31,9 @@ class UserForm
                 TextInput::make('password')
                     ->inlineLabel()
                     ->revealable()
+                    ->dehydrated(fn ($state) => filled($state))
                     ->password()
-                    ->required(),
+                    ->required(fn (string $operation) => $operation === 'create'),
 
                 TextInput::make('phone_number')
                     ->inlineLabel()
