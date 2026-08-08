@@ -2,9 +2,9 @@
 
 namespace App\Providers;
 
-// use Filament\Auth\Http\Responses\Contracts\LogoutResponse;
+use Filament\Auth\Http\Responses\Contracts\LogoutResponse;
 
-use App\Http\Responses\LogoutResponse;
+// use App\Http\Responses\LogoutResponse;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider

@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('name')->unique();
             $table->string('slug')->unique();
+            $table->foreignId('owner_id')->constrained('users')->restrictOnDelete();
+            $table->foreignId('base_currency_id')->constrained('currencies')->restrictOnDelete();
             $table->timestamps();
         });
     }
