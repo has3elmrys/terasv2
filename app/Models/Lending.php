@@ -63,6 +63,30 @@ class Lending extends Model
         return $this->hasMany(Transaction::class);
     }
 
+    public function remaining(): string
+{
+    $ghostType = $this->direction === 'lend' ? 'receivable' : 'payable';
+
+    $ghostBank = Bank::where('team_id', $this->team_id)
+        ->where('currency_id', $this->currency_id)
+        ->where('type', $ghostType)
+        ->first();
+
+    if (! $ghostBank) {
+        return $this->amount;
+    }
+
+    $net = '0';
+
+    foreach (Transaction::where('lending_id', $this->id)->where('bank_id', $ghostBank->id)->get() as $t) {
+        $net = $t->type === 'transfer_in'
+            ? bcadd($net, $t->amount, 4)
+            : bcsub($net, $t->amount, 4);
+    }
+
+    return bccomp($net, '0', 4) === -1 ? bcmul($net, '-1', 4) : $net;
+}
+
     protected static function booted(): void
     {
 
@@ -127,7 +151,11 @@ class Lending extends Model
                         'lending_id' => $lending->id,
                     ]);
                 }
+
             });
         });
+
+
+
     }
 }

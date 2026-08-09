@@ -2,15 +2,23 @@
 
 namespace App\Filament\Team\Resources\Lendings\Tables;
 
+use App\Models\Bank;
+use App\Models\Lending;
+use App\Models\Transaction;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
-use Filament\Tables\Columns\ImageColumn;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class LendingsTable
 {
@@ -23,6 +31,10 @@ class LendingsTable
                 TextColumn::make('bank.name')->label('Account'),
                 TextColumn::make('currency.code')->label('Currency'),
                 TextColumn::make('amount')->numeric()->sortable(),
+                TextColumn::make('remaining')
+                    ->label('Remaining')
+                    ->state(fn (Lending $record) => $record->remaining())
+                    ->numeric(),
                 TextColumn::make('date')->date()->sortable(),
                 TextColumn::make('due_date')->date()->sortable(),
                 TextColumn::make('status')->badge(),
@@ -35,6 +47,71 @@ class LendingsTable
             ])
             ->recordActions([
                 EditAction::make(),
+
+                Action::make('recordPayment')
+                    ->label('Record Payment')
+                    ->visible(fn (Lending $record) => in_array($record->status, ['active', 'partially_paid']))
+                    ->form([
+                        TextInput::make('amount')
+                            ->numeric()
+                            ->required(),
+
+                        Select::make('bank_id')
+                            ->label('Deposit to / Pay from')
+                            ->relationship('bank', 'name', fn ($query) => $query->where('type', 'cash'))
+                            ->getOptionLabelFromRecordUsing(fn ($record) => "{$record->name} - {$record->currency->code}")
+                            ->searchable()
+                            ->preload()
+                            ->required(),
+                        DatePicker::make('date')
+                            ->default(today())
+                            ->required(),
+                    ])
+                    ->action(function (Lending $record, array $data) {
+                        DB::transaction(function () use ($record, $data) {
+                            $rateToBase = bcdiv($record->currency->rate_to_pivot, $record->team->baseCurrency->rate_to_pivot, 12);
+                            $baseAmount = bcmul($data['amount'], $rateToBase, 4);
+
+                            $ghostType = $record->direction === 'lend' ? 'receivable' : 'payable';
+
+                            $ghostBank = Bank::where('team_id', $record->team_id)
+                                ->where('currency_id', $record->currency_id)
+                                ->where('type', $ghostType)
+                                ->first();
+
+                            $transferGroupId = (string) Str::uuid();
+
+                            $legs = $record->direction === 'lend'
+                                ? [
+                                    ['bank_id' => $ghostBank->id, 'type' => 'transfer_out'],
+                                    ['bank_id' => $data['bank_id'], 'type' => 'transfer_in'],
+                                ]
+                                : [
+                                    ['bank_id' => $data['bank_id'], 'type' => 'transfer_out'],
+                                    ['bank_id' => $ghostBank->id, 'type' => 'transfer_in'],
+                                ];
+
+                            foreach ($legs as $leg) {
+                                Transaction::create([
+                                    'team_id' => $record->team_id,
+                                    'bank_id' => $leg['bank_id'],
+                                    'currency_id' => $record->currency_id,
+                                    'type' => $leg['type'],
+                                    'transfer_group_id' => $transferGroupId,
+                                    'amount' => $data['amount'],
+                                    'rate_to_base' => $rateToBase,
+                                    'base_amount' => $baseAmount,
+                                    'date' => $data['date'],
+                                    'lending_id' => $record->id,
+                                ]);
+                            }
+
+                            $remaining = $record->remaining();
+
+                            $record->status = $remaining <= 0 ? 'paid' : 'partially_paid';
+                            $record->save();
+                        });
+                    }),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
