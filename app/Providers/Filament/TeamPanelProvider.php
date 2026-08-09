@@ -58,7 +58,7 @@ class TeamPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Team/Widgets'), for: 'App\Filament\Team\Widgets')
             ->widgets([
                 AccountWidget::class,
-                FilamentInfoWidget::class,
+                // FilamentInfoWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,

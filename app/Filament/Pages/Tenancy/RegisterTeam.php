@@ -4,6 +4,7 @@ namespace App\Filament\Pages\Tenancy;
 
 use App\Models\Team;
 use Closure;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Pages\Tenancy\RegisterTenant;
 use Filament\Schemas\Components\Utilities\Set;
@@ -44,17 +45,23 @@ class RegisterTeam extends RegisterTenant
                     ->dehydrated()
                     ->inlineLabel()
                     ->required(),
+
+                Select::make('base_currency_id')
+                    ->label('Base Currency')
+                    ->relationship('baseCurrency', 'code')
+                    ->inlineLabel()
+                    ->required(),
             ]);
     }
 
-    protected function handleRegistration(array $data): Team
-    {
-        $team = Team::create($data);
+    // protected function handleRegistration(array $data): Team
+    // {
+    //     $team = Team::create($data);
 
-        $team->users()->attach(auth()->user());
+    //     $team->users()->attach(auth()->user());
 
-        return $team;
-    }
+    //     return $team;
+    // }
 
     public static function canView(): bool
 {
@@ -64,4 +71,15 @@ class RegisterTeam extends RegisterTenant
 
     return parent::canView();
 }
+
+protected function handleRegistration(array $data): Team
+    {
+        $data['owner_id'] = auth()->id();
+
+        $team = Team::create($data);
+
+        $team->users()->attach(auth()->user());
+
+        return $team;
+    }
 }

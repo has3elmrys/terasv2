@@ -23,7 +23,7 @@ class TeamForm
                         fn (): Closure => function (string $attribute, $value, Closure $fail) {
                             if (strtolower(trim($value)) === 'admin') {
                                 $fail('Cannot use "admin" as a team name');
-                            }
+                        }
                         },
                     ])
                     ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state)))
@@ -33,6 +33,21 @@ class TeamForm
                     ->disabled()
                     ->dehydrated()
                     ->inlineLabel()
+                    ->required(),
+
+                Select::make('owner_id')
+                    ->label('Owner')
+                    ->relationship('owner', 'name')
+                    ->inlineLabel()
+                    ->required(),
+
+                Select::make('base_currency_id')
+                    ->label('Base Currency')
+                    ->relationship('baseCurrency', 'name')
+                    ->searchable()
+                    ->preload()
+                    ->inlineLabel()
+                    ->getOptionLabelFromRecordUsing(fn ($record) => "{$record->code} — {$record->name} ({$record->symbol})")
                     ->required(),
 
                 Select::make('users')

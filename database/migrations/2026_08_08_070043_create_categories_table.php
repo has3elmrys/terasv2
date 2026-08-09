@@ -22,7 +22,7 @@ return new class extends Migration
             $table->softDeletes();
 
             $table->unique(['team_id', 'name', 'type']);
-                });
+        });
     }
 
     /**
