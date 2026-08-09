@@ -14,7 +14,6 @@ class Bank extends Model
         'user_id',
         'currency_id',
         'name',
-        'code',
         'logo',
         'opening_balance',
         'opening_balance_date',
