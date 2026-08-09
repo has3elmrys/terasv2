@@ -54,22 +54,23 @@ class Team extends Model
 
         static::created(function (Team $team): void {
             $defaults = [
-                ['name' => 'Salary', 'type' => 'income'],
-                ['name' => 'Food', 'type' => 'expense'],
-                ['name' => 'Transport', 'type' => 'expense'],
-                ['name' => 'Entertainment', 'type' => 'expense'],
-                ['name' => 'Shopping', 'type' => 'expense'],
-                ['name' => 'Health', 'type' => 'expense'],
-                ['name' => 'Education', 'type' => 'expense'],
-                ['name' => 'Utilities', 'type' => 'expense'],
-                ['name' => 'Travel', 'type' => 'expense'],
-                ['name' => 'Subscription', 'type' => 'expense'],
+                ['name' => 'Salary', 'type' => 'income', 'icon' => 'heroicon-o-banknotes'],
+                ['name' => 'Food', 'type' => 'expense', 'icon' => 'heroicon-o-cake'],
+                ['name' => 'Transport', 'type' => 'expense', 'icon' => 'heroicon-o-truck'],
+                ['name' => 'Entertainment', 'type' => 'expense', 'icon' => 'heroicon-o-film'],
+                ['name' => 'Shopping', 'type' => 'expense', 'icon' => 'heroicon-o-shopping-bag'],
+                ['name' => 'Health', 'type' => 'expense', 'icon' => 'heroicon-o-heart'],
+                ['name' => 'Education', 'type' => 'expense', 'icon' => 'heroicon-o-academic-cap'],
+                ['name' => 'Utilities', 'type' => 'expense', 'icon' => 'heroicon-o-bolt'],
+                ['name' => 'Travel', 'type' => 'expense', 'icon' => 'heroicon-o-paper-airplane'],
+                ['name' => 'Subscription', 'type' => 'expense', 'icon' => 'heroicon-o-arrow-path'],
             ];
 
             foreach ($defaults as $category) {
                 $team->categories()->create([
                     'user_id' => $team->owner_id,
                     'name' => $category['name'],
+                    'icon' => $category['icon'],
                     'type' => $category['type'],
                 ]);
             }
