@@ -16,8 +16,7 @@ class TransactionForm
         return $schema
             ->components([
                 Select::make('bank_id')
-                    ->inlineLabel()
-                    ->relationship('bank', 'name')
+                    ->relationship('bank', 'name', fn ($query) => $query->where('type', 'cash'))
                     ->required(),
 
                 Select::make('category_id')

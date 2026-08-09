@@ -19,6 +19,7 @@ class TransactionsTable
     {
         return $table
             ->columns([
+                TextColumn::make('date')->date()->sortable(),
                 TextColumn::make('type')->badge(),
                 TextColumn::make('bank.name')->label('Bank'),
                 TextColumn::make('category.name')->label('Category'),
@@ -26,7 +27,6 @@ class TransactionsTable
                 TextColumn::make('amount')->numeric()->sortable(),
                 TextColumn::make('rate_to_base')->numeric()->sortable(),
                 TextColumn::make('base_amount')->numeric()->sortable(),
-                TextColumn::make('date')->date()->sortable(),
                 ImageColumn::make('image_path'),
                 TextColumn::make('created_at')->dateTime()->sortable()->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')->dateTime()->sortable()->toggleable(isToggledHiddenByDefault: true),
