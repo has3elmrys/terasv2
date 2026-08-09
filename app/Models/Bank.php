@@ -43,7 +43,7 @@ class Bank extends Model
     {
         static::creating(function (Bank $bank): void
         {
-            $bank->user_id = auth()->id();
+            $bank->user_id ??= auth()->id();
         });
     }
 }
