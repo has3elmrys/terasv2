@@ -76,6 +76,7 @@ class Transaction extends Model
     {
         static::creating(function (Transaction $transaction): void {
             $transaction->user_id ??= auth()->id();
+            $transaction->currency_id ??= Bank::find($transaction->bank_id)?->currency_id;
         });
     }
 

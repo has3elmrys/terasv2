@@ -11,7 +11,9 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
+use Filament\Facades\Filament;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
@@ -20,6 +22,7 @@ use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class LendingsTable
 {
@@ -64,11 +67,27 @@ class LendingsTable
                             ->searchable()
                             ->preload()
                             ->required(),
+
                         DatePicker::make('date')
                             ->default(today())
                             ->required(),
+
+                        FileUpload::make('image_path')
+                            ->label('Bukti Pembayaran')
+                            ->openable()
+                            ->imageEditor()
+                            // ->disk('s3')
+                            ->maxSize(15360)
+                            ->preserveFilenames()
+                            ->directory(fn () => 'lendings/'.Filament::getTenant()?->id.'/'.now()->format('Y/m'))
+                            ->getUploadedFileNameForStorageUsing(function (TemporaryUploadedFile $file): string {
+                                $path = (string) str($file->getClientOriginalName())->prepend(now()->timestamp);
+
+                                return $path;
+                            })
+                            ->image(),
                     ])
-                     ->action(function (Lending $record, array $data, Action $action) {
+                    ->action(function (Lending $record, array $data, Action $action) {
                         if ($record->direction === 'borrow') {
                             $bank = Bank::findOrFail($data['bank_id']);
 
@@ -118,12 +137,10 @@ class LendingsTable
                                     'base_amount' => $baseAmount,
                                     'date' => $data['date'],
                                     'lending_id' => $record->id,
+                                    'image_path' => $leg['bank_id'] === $data['bank_id'] ? ($data['image_path'] ?? null) : null,
                                 ]);
                             }
 
-                            $remaining = $record->remaining();
-
-                            // $record->status = $remaining <= 0 ? 'paid' : 'partially_paid';
                             $signedRemaining = $record->signedRemaining();
                             $record->status = bccomp($signedRemaining, '0', 4) <= 0 ? 'paid' : 'partially_paid';
                             $record->save();
