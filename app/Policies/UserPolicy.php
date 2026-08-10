@@ -2,14 +2,13 @@
 
 namespace App\Policies;
 
-use App\Models\User;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class UserPolicy
 {
     use HandlesAuthorization;
-
+    
     public function viewAny(AuthUser $authUser): bool
     {
         return $authUser->can('ViewAny:User');
@@ -30,26 +29,11 @@ class UserPolicy
         return $authUser->can('Update:User');
     }
 
-    // public function delete(AuthUser $authUser): bool
-    // {
-    //     return $authUser->can('Delete:User');
-    // }
-    public function delete(AuthUser $authUser, User $model): bool
+    public function delete(AuthUser $authUser): bool
     {
-        if (! $authUser->can('Delete:User')) {
-            return false;
-        }
-
-        if ($authUser->is($model)) {
-            return false;
-        }
-
-        if ($model->hasRole('super_admin') && User::role('super_admin')->count() <= 1) {
-            return false;
-        }
-
-        return true;
+        return $authUser->can('Delete:User');
     }
+
     public function deleteAny(AuthUser $authUser): bool
     {
         return $authUser->can('DeleteAny:User');

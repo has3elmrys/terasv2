@@ -9,3 +9,4 @@ use Illuminate\Support\Facades\Artisan;
 // })->purpose('Display an inspiring quote');
 
 Schedule::command('subscriptions:process')->daily();
+Schedule::command('rates:fetch')->dailyAt('07:00');

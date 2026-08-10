@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Services\RateProviders\RateProvider;
 use Filament\Auth\Http\Responses\Contracts\LogoutResponse;
 
 // use App\Http\Responses\LogoutResponse;
@@ -15,6 +16,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(LogoutResponse::class, \App\Http\Responses\LogoutResponse::class);
+        $this->app->bind(RateProvider::class, \App\Services\RateProviders\FrankfurterRateProvider::class);
     }
 
     /**

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('exchange_rates', function (Blueprint $table) {
+        Schema::create('exchangerates', function (Blueprint $table) {
             $table->id();
             $table->foreignId('currency_id')->constrained()->cascadeOnDelete();
             $table->date('date');                    // tanggal referensi kurs, BUKAN waktu fetch
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('exchange_rates');
+        Schema::dropIfExists('exchangerates');
     }
 };
