@@ -2,6 +2,7 @@
 
 namespace App\Filament\Team\Resources\Banks\Tables;
 
+use App\Models\Bank;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -34,6 +35,10 @@ class BanksTable
                 TextColumn::make('opening_balance')
                     ->numeric()
                     ->sortable(),
+                TextColumn::make('balance')
+                    ->label('Balance')
+                    ->state(fn (Bank $record) => $record->balance())
+                    ->numeric(),
                 TextColumn::make('opening_balance_date')
                     ->date('d F Y')
                     ->sortable(),

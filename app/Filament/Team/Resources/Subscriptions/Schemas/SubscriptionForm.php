@@ -2,12 +2,14 @@
 
 namespace App\Filament\Team\Resources\Subscriptions\Schemas;
 
+use Filament\Facades\Filament;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Schema;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class SubscriptionForm
 {
@@ -66,6 +68,16 @@ class SubscriptionForm
                     ->columnSpanFull(),
 
                 FileUpload::make('receipt_template')
+                    ->openable()
+                    ->imageEditor()
+                    // ->disk('s3')
+                    ->maxSize(15360)
+                    ->preserveFilenames()
+                    ->directory(fn () => 'subscriptions/' . Filament::getTenant()?->id . '/' . now()->format('Y/m'))
+                    ->getUploadedFileNameForStorageUsing(function (TemporaryUploadedFile $file): string{
+                        $path =  (string) str($file->getClientOriginalName())->prepend(now()->timestamp);
+                        return $path;
+                    })
                     ->inlineLabel()
                     ->image(),
             ]);

@@ -2,11 +2,13 @@
 
 namespace App\Filament\Team\Resources\Banks\Schemas;
 
+use App\Models\Bank;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
+use Filament\Tables\Columns\TextColumn;
 
 class BankForm
 {
@@ -44,6 +46,8 @@ class BankForm
                     ->required()
                     ->numeric()
                     ->default(0.0),
+
+
 
                 DatePicker::make('opening_balance_date')
                 ->inlineLabel(),

@@ -39,11 +39,31 @@ class Bank extends Model
         return $this->belongsTo(Currency::class,'currency_id');
     }
 
+    public function transactions()
+
+    {
+        return $this->hasMany(Transaction::class);
+    }
+
     public static function booted()
     {
         static::creating(function (Bank $bank): void
         {
             $bank->user_id ??= auth()->id();
         });
+    }
+
+    public function balance(): string
+    {
+        $balance = $this->opening_balance;
+
+        foreach ($this->transactions as $t)
+            {
+                $balance = in_array($t->type, ['income', 'transfer_in'])
+                ? bcadd($balance, $t->amount, 4)
+                : bcsub($balance, $t->amount, 4);
+            }
+
+            return $balance;
     }
 }

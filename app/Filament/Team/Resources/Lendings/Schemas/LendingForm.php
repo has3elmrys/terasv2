@@ -2,6 +2,7 @@
 
 namespace App\Filament\Team\Resources\Lendings\Schemas;
 
+use Filament\Facades\Filament;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Radio;
@@ -9,6 +10,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Schema;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class LendingForm
 {
@@ -65,6 +67,16 @@ class LendingForm
                     ->inlinelabel(),
 
                 FileUpload::make('image_path')
+                    ->openable()
+                    ->imageEditor()
+                    // ->disk('s3')
+                    ->maxSize(15360)
+                    ->preserveFilenames()
+                    ->directory(fn () => 'lendings/' . Filament::getTenant()?->id . '/' . now()->format('Y/m'))
+                    ->getUploadedFileNameForStorageUsing(function (TemporaryUploadedFile $file): string{
+                        $path =  (string) str($file->getClientOriginalName())->prepend(now()->timestamp);
+                        return $path;
+                    })
                     ->inlineLabel()
                     ->image(),
             ]);

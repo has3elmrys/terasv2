@@ -21,6 +21,7 @@ class UserForm
                 TextInput::make('email')
                     ->inlineLabel()
                     ->label('Email address')
+                    ->unique()
                     ->email()
                     ->required(),
                 // Toggle::make('has_email_authentication')
