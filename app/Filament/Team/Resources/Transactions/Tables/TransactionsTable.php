@@ -38,14 +38,24 @@ class TransactionsTable
 
                 TextColumn::make('category.name')
                     ->label('Category')
-                ->default(fn ($record) => $record->lending
-                        ? ($record->lending->direction === 'lend' ? 'Lending' : 'Borrow')
-                        : 'Tukar Valas')
+                    ->default(function ($record) {
+                        if (! $record->lending) {
+                            return 'Tukar Valas';
+                        }
+
+                        return match ($record->lending->direction.':'.$record->type) {
+                            'lend:transfer_out' => 'Lend Out',
+                            'lend:transfer_in' => 'Lend Repaid',
+                            'borrow:transfer_in' => 'Borrowed',
+                            'borrow:transfer_out' => 'Borrow Repaid',
+                            default => 'Lending',
+                        };
+                    })
                     ->icon(fn ($record) => $record->category?->icon ?? 'heroicon-o-arrows-right-left')
                     ->badge()
                     ->color(fn ($record) => match ($record->type) {
-                        'income' => 'success',
-                        'expense' => 'danger',
+                        'income', 'transfer_in' => 'success',
+                        'expense', 'transfer_out' => 'danger',
                         default => 'gray',
                     }),
 
