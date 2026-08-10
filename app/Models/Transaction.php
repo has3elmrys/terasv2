@@ -78,4 +78,6 @@ class Transaction extends Model
             $transaction->user_id ??= auth()->id();
         });
     }
+
+
 }

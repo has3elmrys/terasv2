@@ -14,6 +14,7 @@ use Filament\Actions\RestoreBulkAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
@@ -67,7 +68,21 @@ class LendingsTable
                             ->default(today())
                             ->required(),
                     ])
-                    ->action(function (Lending $record, array $data) {
+                     ->action(function (Lending $record, array $data, Action $action) {
+                        if ($record->direction === 'borrow') {
+                            $bank = Bank::findOrFail($data['bank_id']);
+
+                            if (! $bank->hasSufficientBalance($data['amount'])) {
+                                Notification::make()
+                                    ->danger()
+                                    ->title('Saldo gak cukup')
+                                    ->body("{$bank->name} sisa ".number_format((float) $bank->balance(), 2).", gak cukup buat {$data['amount']}.")
+                                    ->send();
+
+                                $action->halt();
+                            }
+                        }
+
                         DB::transaction(function () use ($record, $data) {
                             $rateToBase = bcdiv($record->currency->rate_to_pivot, $record->team->baseCurrency->rate_to_pivot, 12);
                             $baseAmount = bcmul($data['amount'], $rateToBase, 4);

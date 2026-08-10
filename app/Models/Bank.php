@@ -66,4 +66,9 @@ class Bank extends Model
 
             return $balance;
     }
+
+    public function hasSufficientBalance(string $amount): bool
+    {
+        return bccomp(bcsub($this->balance(), $amount, 4), '0', 4) !== -1;
+    }
 }
