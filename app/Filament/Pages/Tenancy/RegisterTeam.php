@@ -15,7 +15,7 @@ class RegisterTeam extends RegisterTenant
 {
     public static function getLabel(): string
     {
-        return 'Register team';
+        return 'Register Vault';
     }
 
     public function form(Schema $schema): Schema

@@ -51,7 +51,7 @@ class TransactionsTable
                             default => 'Lending',
                         };
                     })
-                    ->icon(fn ($record) => $record->category?->icon ?? 'heroicon-o-arrows-right-left')
+                    ->icon(fn ($record) => $record->category?->icon ?? ($record->lending ? 'heroicon-o-banknotes' : 'heroicon-o-arrows-right-left'))
                     ->badge()
                     ->color(fn ($record) => match ($record->type) {
                         'income', 'transfer_in' => 'success',

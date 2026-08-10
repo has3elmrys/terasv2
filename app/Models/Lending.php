@@ -128,11 +128,14 @@ public function netGhostBalance(): string
                     ->where('type', $ghostType)
                     ->first();
 
+
                 if (! $ghostBank) {
+                    $ghostLabel = $ghostType === 'receivable' ? 'Owed to You' : 'You Owe';
+
                     $ghostBank = new Bank([
                         'team_id' => $lending->team_id,
                         'currency_id' => $lending->currency_id,
-                        'name' => ucfirst($ghostType).' '.$currency->code,
+                        'name' => $ghostLabel.' ('.$currency->code.')',
                     ]);
                     $ghostBank->type = $ghostType;
                     $ghostBank->save();

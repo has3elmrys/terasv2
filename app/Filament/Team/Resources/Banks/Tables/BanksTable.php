@@ -39,9 +39,9 @@ class BanksTable
                     ->label('Balance')
                     ->state(fn (Bank $record) => $record->balance())
                     ->numeric(),
-                TextColumn::make('opening_balance_date')
-                    ->date('d F Y')
-                    ->sortable(),
+                // TextColumn::make('opening_balance_date')
+                //     ->date('d F Y')
+                //     ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -59,8 +59,10 @@ class BanksTable
                 TrashedFilter::make(),
             ])
             ->recordActions([
-                EditAction::make(),
+                EditAction::make()
+                ->visible(fn (Bank $record) => $record->type === 'cash'),
             ])
+            ->checkIfRecordIsSelectableUsing(fn (Bank $record) => $record->type === 'cash')
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
