@@ -18,9 +18,11 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class SubscriptionResource extends Resource
 {
+
+    protected static ?int $navigationSort = 3;
     protected static ?string $model = Subscription::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedArrowPath;
 
     protected static ?string $recordTitleAttribute = 'name';
 

@@ -18,9 +18,11 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class BankResource extends Resource
 {
+
+    protected static ?int $navigationSort = 2;
     protected static ?string $model = Bank::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBuildingLibrary;
 
     protected static ?string $recordTitleAttribute = 'name';
 

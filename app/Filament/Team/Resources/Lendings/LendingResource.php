@@ -18,9 +18,11 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class LendingResource extends Resource
 {
+
+    protected static ?int $navigationSort = 4;
     protected static ?string $model = Lending::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBanknotes;
 
     public static function form(Schema $schema): Schema
     {

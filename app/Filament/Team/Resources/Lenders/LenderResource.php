@@ -18,9 +18,10 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class LenderResource extends Resource
 {
+    protected static ?int $navigationSort = 5;
     protected static ?string $model = Lender::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUserGroup;
 
     protected static ?string $recordTitleAttribute = 'name';
 

@@ -20,9 +20,11 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class TransactionResource extends Resource
 {
+
+    protected static ?int $navigationSort = 1;
     protected static ?string $model = Transaction::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedReceiptPercent;
 
     protected static ?string $recordTitleAttribute = 'note';
 
