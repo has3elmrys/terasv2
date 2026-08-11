@@ -30,6 +30,7 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('/admin')
+            ->brandName('Teras Admin Panel')
             // ->login()
             ->resourceCreatePageRedirect('index')
             ->resourceEditPageRedirect('index')

@@ -11,6 +11,9 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class FinancialOverviewStats extends StatsOverviewWidget
 {
+
+    protected static ?int $sort = 1;
+        protected int|array|null $columns = 2;
     use InteractsWithPageFilters;
 
     protected function getStats(): array
@@ -18,6 +21,7 @@ class FinancialOverviewStats extends StatsOverviewWidget
         $teamId = Filament::getTenant()->id;
         $startDate = $this->pageFilters['startDate'] ?? now()->startOfMonth()->toDateString();
         $endDate = $this->pageFilters['endDate'] ?? now()->endOfMonth()->toDateString();
+
 
         $netWorth = Bank::where('team_id', $teamId)
             ->get()
@@ -38,15 +42,22 @@ class FinancialOverviewStats extends StatsOverviewWidget
             ->whereBetween('date', [$startDate, $endDate])
             ->sum('base_amount');
 
+        $net = bcsub($income, $expense, 4);
+
         return [
-            Stat::make('Net Worth', number_format((float) $netWorth, 0))
-                ->color('primary'),
+
 
             Stat::make('Income', number_format((float) $income, 0))
                 ->color('success'),
 
             Stat::make('Expense', number_format((float) $expense, 0))
                 ->color('danger'),
+
+            Stat::make('Net Worth', number_format((float) $netWorth, 0))
+                ->color('primary'),
+
+            Stat::make('Net', number_format((float) $net, 0))
+                ->color(bccomp($net, '0', 4) >= 0 ? 'success' : 'danger'),
         ];
     }
 }

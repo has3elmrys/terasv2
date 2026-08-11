@@ -109,7 +109,7 @@ class DemoSeeder extends Seeder
             'team_id' => $team->id,
             'user_id' => $demoUser->id,
             'name' => 'Demo Friend',
-            'phone' => '+62 812-0000-0000',
+            'phone' => '+1 555-0100-0000',
         ]);
 
         Lending::create([

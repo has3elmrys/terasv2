@@ -37,6 +37,7 @@ class TeamPanelProvider extends PanelProvider
             ->profile(CustomEditProfile::class)
             ->tenant(Team::class, slugAttribute: 'slug')
             ->registration(CustomRegistration::class)
+            ->brandName('Teras')
             ->tenantRegistration(RegisterTeam::class)
             ->resourceCreatePageRedirect('index')
             ->emailVerification()

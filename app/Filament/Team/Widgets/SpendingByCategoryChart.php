@@ -9,6 +9,8 @@ use Filament\Widgets\Concerns\InteractsWithPageFilters;
 
 class SpendingByCategoryChart extends ChartWidget
 {
+
+    protected static ?int $sort = 3;
     use InteractsWithPageFilters;
 
     protected ?string $heading = 'Spending by Category';
