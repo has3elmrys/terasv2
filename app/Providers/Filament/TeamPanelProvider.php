@@ -7,7 +7,10 @@ use App\Filament\Auth\CustomLogin;
 use App\Filament\Auth\CustomRegistration;
 use App\Filament\Pages\Tenancy\RegisterTeam;
 use App\Filament\Team\Pages\TeamDashboard;
+use App\Filament\Team\Resources\Banks\BankResource;
+use App\Filament\Team\Resources\Transactions\TransactionResource;
 use App\Models\Team;
+use Filament\Facades\Filament;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -17,13 +20,19 @@ use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\Support\Facades\FilamentView;
+use Filament\View\PanelsRenderHook;
 use Filament\Widgets\AccountWidget;
 use Filament\Widgets\FilamentInfoWidget;
+use Hammadzafar05\FilamentMobilePreset\FilamentMobilePresetPlugin;
+use Hammadzafar05\MobileBottomNav\MobileBottomNav;
+use Hammadzafar05\MobileBottomNav\MobileBottomNavItem;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class TeamPanelProvider extends PanelProvider
@@ -74,8 +83,36 @@ class TeamPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
+            ->plugin(
+                FilamentMobilePresetPlugin::make()
+                ->bottomNav(
+            MobileBottomNav::make()
+                ->moreButton(false)
+                ->items([
+                    MobileBottomNavItem::make('Transactions')
+                        ->icon('heroicon-o-receipt-percent')
+                        ->url(fn () => TransactionResource::getUrl()),
+
+                    MobileBottomNavItem::make('Dashboard')
+                        ->icon('heroicon-o-home')
+                        ->url(fn () => TeamDashboard::getUrl()),
+
+                    // MobileBottomNavItem::make('Add')
+                    //     ->icon('heroicon-o-plus-circle')
+                    //     ->url(fn () => TransactionResource::getUrl().'?quickAdd=1'),
+
+                    MobileBottomNavItem::make('Banks')
+                        ->icon('heroicon-o-building-library')
+                        ->url(fn () => BankResource::getUrl()),
+                ])
+
+        )
+            )
             ->authMiddleware([
                 Authenticate::class,
             ]);
     }
+
+
+
 }

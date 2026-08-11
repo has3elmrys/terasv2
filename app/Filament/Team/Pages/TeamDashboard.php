@@ -2,6 +2,7 @@
 
 namespace App\Filament\Team\Pages;
 
+use App\Filament\Actions\QuickAddTransaction;
 use App\Models\Transaction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Placeholder;
@@ -12,10 +13,19 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
+use Override;
 
 class TeamDashboard extends Dashboard
 {
     use HasFiltersForm;
+
+    // #[Override]
+    protected function getHeaderActions(): array
+    {
+        return [
+            QuickAddTransaction::make()
+        ];
+    }
 
     public function filtersForm(Schema $schema): Schema
     {

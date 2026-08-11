@@ -60,7 +60,7 @@ class TransactionsTable
                     }),
 
                 TextColumn::make('bank.name')
-                    ->label('Bank')
+                    ->label('Transaction name')
                     ->formatStateUsing(function ($state, $record) {
                         if ($record->lending && in_array($record->bank->type, ['receivable', 'payable'])) {
                             return $record->lending->lender->name;
