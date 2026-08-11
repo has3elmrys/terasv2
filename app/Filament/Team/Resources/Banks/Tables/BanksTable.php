@@ -24,21 +24,22 @@ class BanksTable
                 // TextColumn::make('user_id')
                 //     ->numeric()
                 //     ->sortable(),
-                TextColumn::make('logo')
-                    ->searchable(),
+                // TextColumn::make('logo')
+                // ,
+                    // ->searchable(),
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('type')
                     ->badge(),
                 TextColumn::make('currency.code')
                     ->sortable(),
-                TextColumn::make('opening_balance')
-                    ->numeric()
-                    ->sortable(),
                 TextColumn::make('balance')
                     ->label('Balance')
                     ->state(fn (Bank $record) => $record->balance())
                     ->numeric(),
+                // TextColumn::make('opening_balance')
+                //     ->numeric()
+                //     ->sortable(),
                 // TextColumn::make('opening_balance_date')
                 //     ->date('d F Y')
                 //     ->sortable(),
