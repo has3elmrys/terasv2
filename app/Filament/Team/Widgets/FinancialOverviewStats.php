@@ -5,14 +5,19 @@ namespace App\Filament\Team\Widgets;
 use App\Models\Bank;
 use App\Models\Transaction;
 use Filament\Facades\Filament;
+use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class FinancialOverviewStats extends StatsOverviewWidget
 {
+    use InteractsWithPageFilters;
+
     protected function getStats(): array
     {
         $teamId = Filament::getTenant()->id;
+        $startDate = $this->pageFilters['startDate'] ?? now()->startOfMonth()->toDateString();
+        $endDate = $this->pageFilters['endDate'] ?? now()->endOfMonth()->toDateString();
 
         $netWorth = Bank::where('team_id', $teamId)
             ->get()
@@ -25,26 +30,23 @@ class FinancialOverviewStats extends StatsOverviewWidget
 
         $income = Transaction::where('team_id', $teamId)
             ->where('type', 'income')
-            ->whereYear('date', now()->year)
-            ->whereMonth('date', now()->month)
+            ->whereBetween('date', [$startDate, $endDate])
             ->sum('base_amount');
 
         $expense = Transaction::where('team_id', $teamId)
             ->where('type', 'expense')
-            ->whereYear('date', now()->year)
-            ->whereMonth('date', now()->month)
+            ->whereBetween('date', [$startDate, $endDate])
             ->sum('base_amount');
 
         return [
             Stat::make('Net Worth', number_format((float) $netWorth, 0))
                 ->color('primary'),
 
-            Stat::make('Pemasukan Bulan Ini', number_format((float) $income, 0))
+            Stat::make('Income', number_format((float) $income, 0))
                 ->color('success'),
 
-            Stat::make('Pengeluaran Bulan Ini', number_format((float) $expense, 0))
+            Stat::make('Expense', number_format((float) $expense, 0))
                 ->color('danger'),
         ];
     }
 }
-

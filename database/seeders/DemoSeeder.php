@@ -121,7 +121,7 @@ class DemoSeeder extends Seeder
             'amount' => '500000',
             'date' => now()->subDays(20),
             'due_date' => now()->addDays(10),
-            'note' => 'Demo lending, belum lunas',
+            'note' => 'Demo lending, not yet paid off',
         ]);
     }
 }

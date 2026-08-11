@@ -42,11 +42,13 @@ class RegisterTeam extends RegisterTenant
 
                 TextInput::make('slug')
                     ->disabled()
+                    ->hidden()
                     ->dehydrated()
                     ->inlineLabel()
                     ->required(),
 
                 Select::make('base_currency_id')
+                    ->helperText('Choose your base currency')
                     ->label('Base Currency')
                     ->relationship('baseCurrency', 'code')
                     ->inlineLabel()

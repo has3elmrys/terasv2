@@ -43,24 +43,24 @@ class ListTransactions extends ListRecords
         return [
 
 Action::make('exchange')
-    ->label('Tukar Valas')
+    ->label('Currency Exchange')
     ->form([
         Select::make('from_bank_id')
-            ->label('Dari Bank')
+            ->label('From Bank')
             ->options(fn () => Bank::where('team_id', Filament::getTenant()->id)->where('type', 'cash')->get()->mapWithKeys(fn ($b) => [$b->id => "{$b->name} ({$b->currency->code})"]))
             ->live()
             ->required()
             ->afterStateUpdated(fn (Get $get, Set $set) => self::recalcExchangeOut($get, $set)),
 
         Select::make('to_bank_id')
-            ->label('Ke Bank')
+            ->label('To Bank')
             ->options(fn (Get $get) => Bank::where('team_id', Filament::getTenant()->id)->where('type', 'cash')->where('id', '!=', $get('from_bank_id'))->get()->mapWithKeys(fn ($b) => [$b->id => "{$b->name} ({$b->currency->code})"]))
             ->live()
             ->required()
             ->afterStateUpdated(fn (Get $get, Set $set) => self::recalcExchangeOut($get, $set)),
 
         TextInput::make('amount_in')
-            ->label('Nominal Diterima')
+            ->label('Amount received')
             ->numeric()
             ->required()
             ->live(onBlur: true)
@@ -74,19 +74,19 @@ Action::make('exchange')
             ->afterStateUpdated(fn (Get $get, Set $set) => self::recalcExchangeOut($get, $set)),
 
         TextInput::make('manual_rate')
-            ->label('1 unit "Ke Bank" = berapa unit "Dari Bank"')
+            ->label('1 unit "To Bank" = how many units of "From Bank"')
             ->numeric()
             ->visible(fn (Get $get) => $get('rate_mode') === 'manual')
             ->live(onBlur: true)
             ->afterStateUpdated(fn (Get $get, Set $set) => self::recalcExchangeOut($get, $set)),
 
         TextInput::make('amount_out')
-            ->label('Saldo Terpotong dari Bank Asal (otomatis)')
+            ->label('Deducted from Source Bank (auto)')
             ->numeric()
             ->disabled()
             ->dehydrated()
             ->required()
-            ->helperText('Ke-hitung otomatis dari Nominal Diterima × rate. Ganti rate ke manual kalo mau koreksi.'),
+            ->helperText('Calculated automatically from Amount Received × rate. Switch to manual to correct it.'),
     ])
     // Action check valas
     ->action(function (array $data, Action $action) {
@@ -96,8 +96,8 @@ Action::make('exchange')
         if (! $fromBank->hasSufficientBalance($data['amount_out'])) {
             Notification::make()
                 ->danger()
-                ->title('Saldo gak cukup')
-                ->body("{$fromBank->name} sisa ".number_format((float) $fromBank->balance(), 2).", gak cukup buat {$data['amount_out']}.")
+                ->title('Insufficient balance')
+                ->body("{$fromBank->name} balance is ".number_format((float) $fromBank->balance(), 2).", not enough for {$data['amount_out']}.")
                 ->send();
 
             $action->halt();
@@ -162,8 +162,8 @@ Action::make('exchange')
                     if ($category->type === 'expense' && ! $bank->hasSufficientBalance($data['amount'])) {
                         Notification::make()
                             ->danger()
-                            ->title('Saldo gak cukup')
-                            ->body("{$bank->name} sisa ".number_format((float) $bank->balance(), 2).", gak cukup buat {$data['amount']}.")
+                            ->title('Insufficient Balance')
+                            ->body("{$bank->name} balance is ".number_format((float) $bank->balance(), 2).", not enough for {$data['amount']}.")
                             ->send();
 
                         $action->halt();

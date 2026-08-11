@@ -73,7 +73,7 @@ class LendingsTable
                             ->required(),
 
                         FileUpload::make('image_path')
-                            ->label('Bukti Pembayaran')
+                            ->label('Payment Proof')
                             ->openable()
                             ->imageEditor()
                             // ->disk('s3')
@@ -94,8 +94,8 @@ class LendingsTable
                             if (! $bank->hasSufficientBalance($data['amount'])) {
                                 Notification::make()
                                     ->danger()
-                                    ->title('Saldo gak cukup')
-                                    ->body("{$bank->name} sisa ".number_format((float) $bank->balance(), 2).", gak cukup buat {$data['amount']}.")
+                                    ->title('Insufficient balance')
+                                    ->body("{$bank->name} balance is ".number_format((float) $bank->balance(), 2).", not enough for {$data['amount']}.")
                                     ->send();
 
                                 $action->halt();

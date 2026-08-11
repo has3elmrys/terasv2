@@ -3,9 +3,11 @@
 namespace App\Filament\Team\Resources\Transactions\Schemas;
 
 use App\Models\Bank;
+use App\Models\Category;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
@@ -30,22 +32,29 @@ class TransactionForm
 
                 Select::make('category_id')
                     ->inlineLabel()
-                    ->relationship('category', 'name'),
+                    ->relationship('category', 'name')
+                    ->getOptionLabelFromRecordUsing(fn ($record) => "{$record->name} - {$record->type} ")
+                    ->live()
+                    ->afterStateUpdated(fn ($state, Set $set) => $set('type', $state ? Category::find($state)?->type : null))
+                    ->required(),
+
+                Hidden::make('type')
+                ->required(),
 
                 // Select::make('currency_id')
                 //     ->relationship('currency', 'code')
                 //     ->hidden()
                 //     ->required(),
 
-                Select::make('type')
-                    ->inlineLabel()
-                    ->options([
-                        'income' => 'Income',
-                        'expense' => 'Expense',
-                        'transfer_out' => 'Transfer out',
-                        'transfer_in' => 'Transfer in',
-                    ])
-                    ->required(),
+                // Select::make('type')
+                //     ->inlineLabel()
+                //     ->options([
+                //         'income' => 'Income',
+                //         'expense' => 'Expense',
+                //         'transfer_out' => 'Transfer out',
+                //         'transfer_in' => 'Transfer in',
+                //     ])
+                //     ->required(),
 
                 TextInput::make('amount')
                     ->inlineLabel()
@@ -58,15 +67,17 @@ class TransactionForm
                     ->inlineLabel()
                     ->required()
                     ->numeric()
-                    ->helperText('Otomatis dari rate bank. Bisa dikoreksi manual kalo perlu (misal transaksi lama).'),
+                    ->helperText('Filled automatically from the bank rate. Can be corrected manually if needed (e.g. old transactions)'),
 
                 TextInput::make('base_amount')
                     ->inlineLabel()
+                     ->helperText(fn () => 'Automatically converted to your base currency ('.Filament::getTenant()->baseCurrency->code.'). Only edit to correct an old transaction.')
                     ->required()
                     ->numeric(),
 
                 DatePicker::make('date')
                     ->label('Transaction date')
+                    ->default('now')
                     ->inlineLabel()
                     ->required(),
 

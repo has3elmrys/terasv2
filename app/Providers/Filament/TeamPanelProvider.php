@@ -6,6 +6,7 @@ use App\Filament\Auth\CustomEditProfile;
 use App\Filament\Auth\CustomLogin;
 use App\Filament\Auth\CustomRegistration;
 use App\Filament\Pages\Tenancy\RegisterTeam;
+use App\Filament\Team\Pages\TeamDashboard;
 use App\Models\Team;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -53,11 +54,12 @@ class TeamPanelProvider extends PanelProvider
             ->discoverResources(in: app_path('Filament/Team/Resources'), for: 'App\Filament\Team\Resources')
             ->discoverPages(in: app_path('Filament/Team/Pages'), for: 'App\Filament\Team\Pages')
             ->pages([
-                Dashboard::class,
+                // Dashboard::class,
+                TeamDashboard::class
             ])
             ->discoverWidgets(in: app_path('Filament/Team/Widgets'), for: 'App\Filament\Team\Widgets')
             ->widgets([
-                AccountWidget::class,
+                // AccountWidget::class,
                 // FilamentInfoWidget::class,
             ])
             ->middleware([

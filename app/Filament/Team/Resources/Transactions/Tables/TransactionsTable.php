@@ -40,7 +40,7 @@ class TransactionsTable
                     ->label('Category')
                     ->default(function ($record) {
                         if (! $record->lending) {
-                            return 'Tukar Valas';
+                            return 'Currency Exchange';
                         }
 
                         return match ($record->lending->direction.':'.$record->type) {
