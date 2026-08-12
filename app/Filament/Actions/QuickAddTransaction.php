@@ -12,6 +12,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Notifications\Notification;
+use Filament\Support\RawJs;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class QuickAddTransaction extends Action
@@ -35,6 +36,7 @@ class QuickAddTransaction extends Action
                 TextInput::make('amount')
                     ->numeric()
                     ->required()
+                    ->mask(RawJs::make('$money($input)'))
                     ->autofocus(),
 
                 ToggleButtons::make('category_id')

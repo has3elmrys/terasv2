@@ -17,6 +17,7 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
+use Filament\Support\RawJs;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
@@ -58,7 +59,9 @@ class LendingsTable
                     ->form([
                         TextInput::make('amount')
                             ->numeric()
-                            ->required(),
+                            ->required()
+                            ->mask(RawJs::make('$money($input)'))
+                            ->stripCharacters(','),
 
                         Select::make('bank_id')
                             ->label('Deposit to / Pay from')

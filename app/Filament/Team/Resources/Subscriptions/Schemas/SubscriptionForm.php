@@ -9,6 +9,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Schema;
+use Filament\Support\RawJs;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class SubscriptionForm
@@ -37,7 +38,9 @@ class SubscriptionForm
                 TextInput::make('amount')
                     ->inlineLabel()
                     ->required()
-                    ->numeric(),
+                    ->numeric()
+                    ->mask(RawJs::make('$money($input)'))
+                    ->stripCharacters(','),
 
                 Select::make('frequency')
                     ->inlineLabel()

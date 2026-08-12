@@ -14,6 +14,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
+use Filament\Support\RawJs;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class TransactionForm
@@ -58,6 +59,7 @@ class TransactionForm
 
                 TextInput::make('amount')
                     ->inlineLabel()
+                    ->mask(RawJs::make('$money($input)'))
                     ->required()
                     ->numeric()
                     ->live(onBlur: true)

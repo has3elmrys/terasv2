@@ -8,6 +8,7 @@ use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
+use Filament\Support\RawJs;
 use Filament\Tables\Columns\TextColumn;
 
 class BankForm
@@ -43,6 +44,7 @@ class BankForm
 
                 TextInput::make('opening_balance')
                     ->inlineLabel()
+                    ->mask(RawJs::make('$money($input)'))
                     ->required()
                     ->numeric()
                     ->default(0.0),

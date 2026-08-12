@@ -6,6 +6,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
+use Filament\Support\RawJs;
 
 class CategoryForm
 {
@@ -23,6 +24,7 @@ class CategoryForm
                     ->required(),
                 TextInput::make('budget_amount_limit')
                     ->label('Monthly Budget Limit')
+                    ->mask(RawJs::make('$money($input)'))
                     ->inlineLabel()
                     ->numeric()
                     ->helperText('Optional. Leave blank for no limit.')

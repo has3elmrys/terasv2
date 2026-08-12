@@ -15,6 +15,7 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
+use Filament\Support\RawJs;
 use Illuminate\Support\Str;
 
 class ListBanks extends ListRecords
@@ -45,6 +46,8 @@ class ListBanks extends ListRecords
                         ->label('Amount received')
                         ->numeric()
                         ->required()
+                        ->mask(RawJs::make('$money($input)'))
+                        ->stripCharacters(',')
                         ->live(onBlur: true)
                         ->afterStateUpdated(fn (Get $get, Set $set) => self::recalcExchangeOut($get, $set)),
 
@@ -65,6 +68,8 @@ class ListBanks extends ListRecords
                     TextInput::make('amount_out')
                         ->label('Deducted from Source Bank (auto)')
                         ->numeric()
+                        ->mask(RawJs::make('$money($input)'))
+                        ->stripCharacters(',')
                         ->disabled()
                         ->dehydrated()
                         ->required()
@@ -97,6 +102,9 @@ class ListBanks extends ListRecords
                         'type' => 'transfer_out',
                         'transfer_group_id' => $transferGroupId,
                         'amount' => $data['amount_out'],
+                        'rate_to_base' => $rateOutToBase,
+                        'base_amount' => bcmul($data['amount_out'], $rateOutToBase, 4),
+                        'date' => today(),
                         'rate_to_base' => $rateOutToBase,
                         'base_amount' => bcmul($data['amount_out'], $rateOutToBase, 4),
                         'date' => today(),

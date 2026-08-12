@@ -10,6 +10,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Schema;
+use Filament\Support\RawJs;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class LendingForm
@@ -52,7 +53,9 @@ class LendingForm
                 TextInput::make('amount')
                     ->inlinelabel()
                     ->required()
-                    ->numeric(),
+                    ->numeric()
+                    ->mask(RawJs::make('$money($input)'))
+                    ->stripCharacters(','),
 
                 DatePicker::make('date')
                     ->inlinelabel()
