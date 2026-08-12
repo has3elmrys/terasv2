@@ -53,8 +53,12 @@ class AcceptInvitationController extends Controller
     }
 
     public function store(Request $request, string $token)
-    {
-        $invite = TeamInvitation::where('token', $token)->firstOrFail();
+{
+    if (Auth::check()) {
+        return redirect()->route('invitations.accept', $token);
+    }
+
+    $invite = TeamInvitation::where('token', $token)->firstOrFail();
 
         if ($invite->accepted_at || $invite->isExpired()) {
             abort(410);
@@ -71,9 +75,10 @@ class AcceptInvitationController extends Controller
             'password' => Hash::make($data['password']),
         ]);
 
-        if (Role::where('name', 'member')->exists()) {
-            $user->assignRole('member');
+        if (Role::where('name', 'Vault-Member')->exists()) {
+            $user->assignRole('Vault-Member');
         }
+
 
         $this->attach($invite, $user);
 

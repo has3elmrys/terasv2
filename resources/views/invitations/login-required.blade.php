@@ -1,27 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>Invite</title>
-    @filamentStyles
-</head>
-<body class="fi-body min-h-screen bg-gray-50 dark:bg-gray-950 flex items-center justify-center p-4">
-    <div class="w-full max-w-md">
-        <x-filament::section>
-            <x-slot name="heading">
-                Join {{ $invite->team->name }}
-            </x-slot>
+@extends('invitations.layout')
 
-            <p class="text-sm mb-4">
-                Akun dengan email <strong>{{ $invite->email }}</strong> udah ada. Login dulu, terus buka link ini lagi.
-            </p>
+@section('content')
+    <h1>Join {{ $invite->team->name }}</h1>
 
-            <x-filament::link href="/login">
-                Login
-            </x-filament::link>
-        </x-filament::section>
-    </div>
+    <p>Akun dengan email <strong>{{ $invite->email }}</strong> udah ada. Login dulu, terus buka link ini lagi.</p>
 
-    @filamentScripts
-</body>
-</html>
+    <a href="/login" class="button-link">Login</a>
+@endsection

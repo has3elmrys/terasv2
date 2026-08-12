@@ -13,8 +13,8 @@ class CustomRegistration extends Register
     {
         $user = parent::handleRegistration($data);
 
-        if (Role::where('name', 'User-Team')->exists()) {
-            $user->assignRole('User-Team');
+        if (Role::where('name', 'Vault-Admin')->exists()) {
+            $user->assignRole('Vault-Admin');
         }
 
         return $user;
