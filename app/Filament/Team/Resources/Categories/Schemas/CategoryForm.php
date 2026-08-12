@@ -4,6 +4,7 @@ namespace App\Filament\Team\Resources\Categories\Schemas;
 
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 
 class CategoryForm
@@ -18,7 +19,14 @@ class CategoryForm
                 Select::make('type')
                     ->inlineLabel()
                     ->options(['income' => 'Income', 'expense' => 'Expense'])
+                    ->live()
                     ->required(),
+                TextInput::make('budget_amount_limit')
+                    ->label('Monthly Budget Limit')
+                    ->inlineLabel()
+                    ->numeric()
+                    ->helperText('Optional. Leave blank for no limit.')
+                    ->visible(fn (Get $get) => $get('type') === 'expense'),
                 // ToggleButtons::make('icon')
                 //     ->label('Icon')
                 //     ->options([

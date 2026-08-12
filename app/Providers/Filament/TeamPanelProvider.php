@@ -87,7 +87,7 @@ class TeamPanelProvider extends PanelProvider
                 FilamentMobilePresetPlugin::make()
                 ->bottomNav(
             MobileBottomNav::make()
-                ->moreButton(false)
+                // ->moreButton(false)
                 ->items([
                     MobileBottomNavItem::make('Transactions')
                         ->icon('heroicon-o-receipt-percent')

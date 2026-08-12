@@ -26,6 +26,11 @@ class Category extends Model
         return $this->belongsTo(User::class,'user_id');
     }
 
+    public function budget()
+    {
+        return $this->hasOne(Budget::class);
+    }
+
      protected static function booted(): void
     {
         static::creating(function (Category $category): void {
