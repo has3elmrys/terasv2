@@ -45,6 +45,7 @@ class BankForm
                 TextInput::make('opening_balance')
                     ->inlineLabel()
                     ->mask(RawJs::make('$money($input)'))
+                    ->stripCharacters(',')
                     ->required()
                     ->numeric()
                     ->default(0.0),

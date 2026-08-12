@@ -25,6 +25,7 @@ class CategoryForm
                 TextInput::make('budget_amount_limit')
                     ->label('Monthly Budget Limit')
                     ->mask(RawJs::make('$money($input)'))
+                    ->stripCharacters(',')
                     ->inlineLabel()
                     ->numeric()
                     ->helperText('Optional. Leave blank for no limit.')

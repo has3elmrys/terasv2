@@ -40,6 +40,7 @@ class SubscriptionForm
                     ->required()
                     ->numeric()
                     ->mask(RawJs::make('$money($input)'))
+                    ->stripCharacters(',')
                     ->stripCharacters(','),
 
                 Select::make('frequency')

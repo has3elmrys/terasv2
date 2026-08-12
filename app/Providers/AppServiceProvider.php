@@ -3,6 +3,9 @@
 namespace App\Providers;
 
 use App\Services\RateProviders\RateProvider;
+use Spatie\Permission\PermissionRegistrar;
+use App\Models\Permission;
+use App\Models\Role;
 use Filament\Auth\Http\Responses\Contracts\LogoutResponse;
 
 // use App\Http\Responses\LogoutResponse;
@@ -24,6 +27,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        app(PermissionRegistrar::class)
+            ->setPermissionClass(Permission::class)
+            ->setRoleClass(Role::class);
+
         //
     }
 }

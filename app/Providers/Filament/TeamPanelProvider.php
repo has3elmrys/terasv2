@@ -10,20 +10,14 @@ use App\Filament\Team\Pages\TeamDashboard;
 use App\Filament\Team\Resources\Banks\BankResource;
 use App\Filament\Team\Resources\Transactions\TransactionResource;
 use App\Models\Team;
-use Filament\Facades\Filament;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\MenuItem;
-use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
-use Filament\Support\Facades\FilamentView;
-use Filament\View\PanelsRenderHook;
-use Filament\Widgets\AccountWidget;
-use Filament\Widgets\FilamentInfoWidget;
 use Hammadzafar05\FilamentMobilePreset\FilamentMobilePresetPlugin;
 use Hammadzafar05\MobileBottomNav\MobileBottomNav;
 use Hammadzafar05\MobileBottomNav\MobileBottomNavItem;
@@ -32,7 +26,6 @@ use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
-use Illuminate\Support\Facades\Blade;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class TeamPanelProvider extends PanelProvider

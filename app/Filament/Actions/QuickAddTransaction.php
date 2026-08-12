@@ -37,6 +37,7 @@ class QuickAddTransaction extends Action
                     ->numeric()
                     ->required()
                     ->mask(RawJs::make('$money($input)'))
+                    ->stripCharacters(',')
                     ->autofocus(),
 
                 ToggleButtons::make('category_id')

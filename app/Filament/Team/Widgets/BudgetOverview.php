@@ -3,6 +3,7 @@
 namespace App\Filament\Team\Widgets;
 
 use App\Models\Budget;
+use App\Support\Money;
 use Filament\Facades\Filament;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
@@ -10,6 +11,8 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 class BudgetOverview extends StatsOverviewWidget
 {
     protected static ?int $sort = 3;
+
+    protected int|array|null $columns = 2;
 
     protected function getStats(): array
     {
@@ -26,7 +29,7 @@ class BudgetOverview extends StatsOverviewWidget
 
                 return Stat::make(
                     $budget->category->name,
-                    $baseCurrency->symbol.' '.number_format((float) $budget->spent(), 0).' / '.number_format((float) $budget->amount_limit, 0)
+                    $baseCurrency->symbol.' '.Money::abbreviate($budget->spent()).' / '.Money::abbreviate($budget->amount_limit)
                 )
                     ->description($budget->percentUsed().'% used')
                     ->color($color);

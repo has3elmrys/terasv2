@@ -56,7 +56,6 @@ class LendingForm
                     ->numeric()
                     ->mask(RawJs::make('$money($input)'))
                     ->stripCharacters(','),
-
                 DatePicker::make('date')
                     ->inlinelabel()
                     ->required(),
