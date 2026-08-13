@@ -22,7 +22,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 #[Fillable(['name', 'email', 'password','has_email_authentication','app_authentication_secret','phone_number'])]
 #[Hidden(['password', 'remember_token','app_authentication_secret'])]
-class User extends Authenticatable implements FilamentUser, HasTenants, MustVerifyEmail, HasEmailAuthentication
+class User extends Authenticatable implements FilamentUser, HasTenants, MustVerifyEmail, HasEmailAuthentication, HasAppAuthentication
 // class User extends Authenticatable implements FilamentUser, HasTenants
 
 {
@@ -83,6 +83,22 @@ class User extends Authenticatable implements FilamentUser, HasTenants, MustVeri
             $this->has_email_authentication =$condition;
             $this->save();
         }
+
+        public function getAppAuthenticationSecret(): ?string
+        {
+            return $this->app_authentication_secret;
+        }
+
+        public function saveAppAuthenticationSecret(?string $secret): void
+        {
+            $this->app_authentication_secret = $secret;
+            $this->save();
+        }
+
+        public function getAppAuthenticationHolderName(): string
+        {
+            return $this->email;
+}
 
 
 
