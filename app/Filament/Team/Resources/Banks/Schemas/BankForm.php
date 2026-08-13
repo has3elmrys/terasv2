@@ -32,6 +32,7 @@ class BankForm
 
                 Select::make('currency_id')
                     ->inlineLabel()
+                    ->required()
                     ->label('Currency')
                     ->relationship('currency', 'code'),
 
