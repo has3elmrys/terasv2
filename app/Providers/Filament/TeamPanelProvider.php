@@ -27,7 +27,7 @@ use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-
+use Filament\View\PanelsRenderHook;
 class TeamPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
@@ -40,10 +40,12 @@ class TeamPanelProvider extends PanelProvider
             ->tenant(Team::class, slugAttribute: 'slug')
             ->registration(CustomRegistration::class)
             ->brandName('Teras')
+            // ->brandLogo(asset('icon/logo/teras-icon-512.png'))
             ->tenantRegistration(RegisterTeam::class)
             ->resourceCreatePageRedirect('index')
             ->emailVerification()
             ->resourceEditPageRedirect('index')
+
             ->userMenuItems([
                 MenuItem::make()
                         ->label('Admin Panel')
@@ -54,6 +56,8 @@ class TeamPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Amber,
             ])
+             ->renderHook(PanelsRenderHook::HEAD_END, fn () => view('partials.pwa-head'))
+            ->renderHook(PanelsRenderHook::BODY_END, fn () => view('partials.pwa-scripts'))
             ->discoverResources(in: app_path('Filament/Team/Resources'), for: 'App\Filament\Team\Resources')
             ->discoverPages(in: app_path('Filament/Team/Pages'), for: 'App\Filament\Team\Pages')
             ->pages([
