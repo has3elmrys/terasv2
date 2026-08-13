@@ -46,7 +46,9 @@ class FinancialOverviewStats extends StatsOverviewWidget
                 ->icon(Heroicon::ArrowLongUp),
 
             Stat::make('Net', Money::abbreviate($net))
-                ->description('This period')
+                ->description(bccomp((string) $income, '0', 4) === 0
+                    ? 'No income recorded this period'
+                    : 'Income − Expense')
                 ->color(bccomp($net, '0', 4) >= 0 ? 'success' : 'danger')
                 ->icon(bccomp($net, '0', 4) >= 0 ? Heroicon::ArrowLongDown : Heroicon::ArrowLongUp),
         ];

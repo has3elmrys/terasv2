@@ -14,7 +14,7 @@ use Filament\Forms\Components\ToggleButtons;
 use Filament\Notifications\Notification;
 use Filament\Support\RawJs;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
-
+use Livewire\Component;
 class QuickAddTransaction extends Action
 {
     public static function getDefaultName(): ?string
@@ -69,7 +69,7 @@ class QuickAddTransaction extends Action
                     })
                     ->image(),
             ])
-            ->action(function (array $data, Action $action) {
+            ->action(function (array $data, Action $action, Component $livewire) {
                 $bank = Bank::findOrFail($data['bank_id']);
                 $category = Category::findOrFail($data['category_id']);
 
@@ -100,6 +100,7 @@ class QuickAddTransaction extends Action
                     'image_path' => $data['image_path'] ?? null,
                     'date' => today(),
                 ]);
+
             });
     }
 }

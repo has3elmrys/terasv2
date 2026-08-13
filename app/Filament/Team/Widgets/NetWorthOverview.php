@@ -5,11 +5,13 @@ namespace App\Filament\Team\Widgets;
 use App\Models\Bank;
 use App\Support\Money;
 use Filament\Facades\Filament;
+use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class NetWorthOverview extends StatsOverviewWidget
 {
+     use InteractsWithPageFilters;
     protected static ?int $sort = 1;
 
     protected int | string | array $columnSpan = 'full';

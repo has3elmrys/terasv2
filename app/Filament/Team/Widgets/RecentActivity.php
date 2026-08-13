@@ -6,10 +6,12 @@ use App\Models\Transaction;
 use Filament\Facades\Filament;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Filament\Widgets\TableWidget;
 
 class RecentActivity extends TableWidget
 {
+     use InteractsWithPageFilters;
 
     protected static ?int $sort = 4;
     // protected int|string|array $columnSpan = 'full';

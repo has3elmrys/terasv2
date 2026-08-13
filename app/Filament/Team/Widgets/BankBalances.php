@@ -5,11 +5,13 @@ namespace App\Filament\Team\Widgets;
 use App\Models\Bank;
 use App\Support\Money;
 use Filament\Facades\Filament;
+use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class BankBalances extends StatsOverviewWidget
 {
+     use InteractsWithPageFilters;
     protected static ?int $sort = 2;
 
     protected int|array|null $columns = 2;
