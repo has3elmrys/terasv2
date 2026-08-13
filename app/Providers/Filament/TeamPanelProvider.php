@@ -47,10 +47,10 @@ class TeamPanelProvider extends PanelProvider
             ->resourceCreatePageRedirect('index')
             ->emailVerification()
             ->passwordReset()
-            // ->multiFactorAuthentication([
-            //     EmailAuthentication::make(),
-            //     AppAuthentication::make()
-            // ])
+            ->multiFactorAuthentication([
+                EmailAuthentication::make(),
+                AppAuthentication::make()
+            ])
             ->resourceEditPageRedirect('index')
 
             ->userMenuItems([
