@@ -22,8 +22,8 @@ use Spatie\Permission\Traits\HasRoles;
 
 #[Fillable(['name', 'email', 'password','has_email_authentication','app_authentication_secret','phone_number'])]
 #[Hidden(['password', 'remember_token','app_authentication_secret'])]
-// class User extends Authenticatable implements FilamentUser, HasTenants, MustVerifyEmail, HasEmailAuthentication
-class User extends Authenticatable implements FilamentUser, HasTenants
+class User extends Authenticatable implements FilamentUser, HasTenants, MustVerifyEmail, HasEmailAuthentication
+// class User extends Authenticatable implements FilamentUser, HasTenants
 
 {
     /** @use HasFactory<UserFactory> */

@@ -10,6 +10,8 @@ use App\Filament\Team\Pages\TeamDashboard;
 use App\Filament\Team\Resources\Banks\BankResource;
 use App\Filament\Team\Resources\Transactions\TransactionResource;
 use App\Models\Team;
+use Filament\Auth\MultiFactor\App\AppAuthentication;
+use Filament\Auth\MultiFactor\Email\EmailAuthentication;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -44,6 +46,11 @@ class TeamPanelProvider extends PanelProvider
             ->tenantRegistration(RegisterTeam::class)
             ->resourceCreatePageRedirect('index')
             ->emailVerification()
+            ->passwordReset()
+            ->multiFactorAuthentication([
+                EmailAuthentication::make(),
+                AppAuthentication::make()
+            ])
             ->resourceEditPageRedirect('index')
 
             ->userMenuItems([
