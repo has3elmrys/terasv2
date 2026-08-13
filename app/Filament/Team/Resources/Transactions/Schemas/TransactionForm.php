@@ -60,6 +60,7 @@ class TransactionForm
                 TextInput::make('amount')
                     ->inlineLabel()
                     ->mask(RawJs::make('$money($input)'))
+                    ->stripCharacters(',')
                     ->required()
                     ->numeric()
                     ->live(onBlur: true)

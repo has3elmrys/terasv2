@@ -69,6 +69,10 @@ class AcceptInvitationController extends Controller
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
+        if (User::where('email', $invite->email)->exists()) {
+        return redirect()->route('invitations.accept', $token);
+}
+
         $user = User::create([
             'name' => $data['name'],
             'email' => $invite->email,

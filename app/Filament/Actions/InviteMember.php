@@ -8,6 +8,7 @@ use Filament\Actions\Action;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
+use Illuminate\Validation\Rules\Unique;
 
 class InviteMember extends Action
 {
@@ -23,7 +24,7 @@ class InviteMember extends Action
         $this
             ->label('Invite Member')
             ->visible(fn () => $this->canInvite())
-            ->form([
+                        ->form([
                 TextInput::make('email')
                     ->email()
                     ->required(),
@@ -38,6 +39,22 @@ class InviteMember extends Action
                         ->danger()
                         ->title('Udah jadi member')
                         ->body("{$data['email']} udah jadi anggota {$team->name}.")
+                        ->send();
+
+                    $action->halt();
+                }
+
+                $hasPendingInvite = TeamInvitation::where('team_id', $team->id)
+                    ->where('email', $data['email'])
+                    ->whereNull('accepted_at')
+                    ->where('expires_at', '>', now())
+                    ->exists();
+
+                if ($hasPendingInvite) {
+                    Notification::make()
+                        ->danger()
+                        ->title('Masih ada invite pending')
+                        ->body("{$data['email']} masih punya invite yang belum expired/di-accept.")
                         ->send();
 
                     $action->halt();
