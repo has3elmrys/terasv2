@@ -56,6 +56,9 @@ class QuickAddTransaction extends Action
 
 
                 FileUpload::make('image_path')
+                    ->disk('s3')
+                    ->visibility('private')
+                    ->optimize('webp')
                     ->openable()
                     ->imageEditor()
                     ->maxSize(15360)
