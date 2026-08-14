@@ -93,21 +93,17 @@ class TeamPanelProvider extends PanelProvider
             MobileBottomNav::make()
                 // ->moreButton(false)
                 ->items([
-                    MobileBottomNavItem::make('Transactions')
-                        ->icon('heroicon-o-receipt-percent')
-                        ->url(fn () => TransactionResource::getUrl()),
+                     MobileBottomNavItem::make('Banks')
+                        ->icon('heroicon-o-building-library')
+                        ->url(fn () => BankResource::getUrl()),
 
                     MobileBottomNavItem::make('Dashboard')
                         ->icon('heroicon-o-home')
                         ->url(fn () => TeamDashboard::getUrl()),
 
-                    // MobileBottomNavItem::make('Add')
-                    //     ->icon('heroicon-o-plus-circle')
-                    //     ->url(fn () => TransactionResource::getUrl().'?quickAdd=1'),
-
-                    MobileBottomNavItem::make('Banks')
-                        ->icon('heroicon-o-building-library')
-                        ->url(fn () => BankResource::getUrl()),
+                    MobileBottomNavItem::make('Transactions')
+                        ->icon('heroicon-o-receipt-percent')
+                        ->url(fn () => TransactionResource::getUrl()),
                 ])
 
         )
