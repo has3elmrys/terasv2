@@ -94,7 +94,7 @@ class TransactionForm
                     ->disk('s3')
                     ->visibility('private')
                     ->optimize('webp')
-                    ->maxSize(15360)
+                    // ->maxSize(15360)
                     ->preserveFilenames()
                     ->directory(fn () => 'receipts/'.Filament::getTenant()?->id.'/'.now()->format('Y/m'))
                     ->getUploadedFileNameForStorageUsing(function (TemporaryUploadedFile $file): string {

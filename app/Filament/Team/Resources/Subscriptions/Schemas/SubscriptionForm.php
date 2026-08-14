@@ -77,7 +77,7 @@ class SubscriptionForm
                     ->disk('s3')
                     ->visibility('private')
                     ->optimize('webp')
-                    ->maxSize(15360)
+                    // ->maxSize(15360)
                     ->preserveFilenames()
                     ->directory(fn () => 'subscriptions/' . Filament::getTenant()?->id . '/' . now()->format('Y/m'))
                     ->getUploadedFileNameForStorageUsing(function (TemporaryUploadedFile $file): string{

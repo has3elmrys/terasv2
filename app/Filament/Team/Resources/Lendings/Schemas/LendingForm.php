@@ -74,7 +74,7 @@ class LendingForm
                     ->disk('s3')
                     ->visibility('private')
                     ->optimize('webp')
-                    ->maxSize(15360)
+                    // ->maxSize(15360)
                     ->preserveFilenames()
                     ->directory(fn () => 'lendings/' . Filament::getTenant()?->id . '/' . now()->format('Y/m'))
                     ->getUploadedFileNameForStorageUsing(function (TemporaryUploadedFile $file): string{

@@ -61,7 +61,7 @@ class QuickAddTransaction extends Action
                     ->optimize('webp')
                     ->openable()
                     ->imageEditor()
-                    ->maxSize(15360)
+                    // ->maxSize(15360)
                     ->preserveFilenames()
                     ->directory(fn () => 'receipts/'.Filament::getTenant()?->id.'/'.now()->format('Y/m'))
                     ->getUploadedFileNameForStorageUsing(function (TemporaryUploadedFile $file): string {
