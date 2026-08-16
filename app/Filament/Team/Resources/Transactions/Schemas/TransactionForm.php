@@ -31,14 +31,21 @@ class TransactionForm
                     ->afterStateUpdated(fn ($state, Get $get, Set $set) => self::recalcFromBank($state, $get, $set))
                     ->required(),
 
+                // Select::make('category_id')
+                //     ->inlineLabel()
+                //     ->relationship('category', 'name')
+                //     ->getOptionLabelFromRecordUsing(fn ($record) => "{$record->name} - {$record->type} ")
+                //     ->live()
+                //     ->afterStateUpdated(fn ($state, Set $set) => $set('type', $state ? Category::find($state)?->type : null))
+                //     ->required(),
                 Select::make('category_id')
                     ->inlineLabel()
                     ->relationship('category', 'name')
                     ->getOptionLabelFromRecordUsing(fn ($record) => "{$record->name} - {$record->type} ")
                     ->live()
                     ->afterStateUpdated(fn ($state, Set $set) => $set('type', $state ? Category::find($state)?->type : null))
-                    ->required(),
-
+                    ->visible(fn (string $operation, Get $get) => ! self::isTransferLeg($operation, $get))
+                    ->required(fn (string $operation, Get $get) => ! self::isTransferLeg($operation, $get)),
                 Hidden::make('type')
                 ->required(),
 
@@ -62,6 +69,8 @@ class TransactionForm
                     ->mask(RawJs::make('$money($input)'))
                     ->stripCharacters(',')
                     ->required()
+                    ->disabled(fn (string $operation, Get $get) => self::isTransferLeg($operation, $get))
+                    ->dehydrated()
                     ->numeric()
                     ->live(onBlur: true)
                     ->afterStateUpdated(fn (Get $get, Set $set) => self::recalcFromBank($get('bank_id'), $get, $set)),
@@ -132,5 +141,10 @@ class TransactionForm
 
         $set('rate_to_base', $rateToBase);
         $set('base_amount', bcmul($amount, $rateToBase, 4));
+    }
+
+    private static function isTransferLeg(string $operation, Get $get): bool
+    {
+        return $operation === 'edit' && ! in_array($get('type'), ['income', 'expense'], true);
     }
 }
