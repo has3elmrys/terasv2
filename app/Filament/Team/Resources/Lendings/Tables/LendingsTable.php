@@ -147,9 +147,7 @@ class LendingsTable
                                 ]);
                             }
 
-                            $signedRemaining = $record->signedRemaining();
-                            $record->status = bccomp($signedRemaining, '0', 4) <= 0 ? 'paid' : 'partially_paid';
-                            $record->save();
+                            $record->refreshStatus();
                         });
                     }),
             ])

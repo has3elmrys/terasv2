@@ -171,8 +171,52 @@ public function netGhostBalance(): string
 
             });
         });
+                static::deleting(function (Lending $lending): void {
+                    Transaction::$cascadingFromLending = true;
 
+                    try {
+                        DB::transaction(function () use ($lending) {
+                            if ($lending->isForceDeleting()) {
+                                $lending->transactions()->withTrashed()->get()->each->forceDelete();
+
+                                return;
+                            }
+
+                            $lending->transactions()->get()->each->delete();
+                        });
+                    } finally {
+                        Transaction::$cascadingFromLending = false;
+                    }
+                });
+
+                static::restored(function (Lending $lending): void {
+                    $lending->refreshStatus();
+                });
+
+                static::restoring(function (Lending $lending): void {
+                    DB::transaction(function () use ($lending) {
+                        $lending->transactions()->onlyTrashed()->get()->each->restore();
+                    });
+                });
 
 
     }
+
+                public function refreshStatus(): void
+            {
+                if ($this->status === 'written_off') {
+                    return;
+                }
+
+                $remaining = $this->signedRemaining();
+
+                $this->status = match (true) {
+                    bccomp($remaining, '0', 4) <= 0 => 'paid',
+                    bccomp($remaining, (string) $this->amount, 4) >= 0 => 'active',
+                    default => 'partially_paid',
+                };
+
+                $this->saveQuietly();
+            }
+
 }

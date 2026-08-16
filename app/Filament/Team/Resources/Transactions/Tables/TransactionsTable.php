@@ -2,7 +2,9 @@
 
 namespace App\Filament\Team\Resources\Transactions\Tables;
 
+use App\Models\Transaction;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ForceDeleteBulkAction;
@@ -96,7 +98,8 @@ class TransactionsTable
                 TrashedFilter::make(),
             ])
             ->recordActions([
-                // ViewAction::make(),
+                DeleteAction::make()
+                    ->hidden(fn (Transaction $record) => filled($record->lending_id)),
                 EditAction::make(),
             ])
             ->toolbarActions([
