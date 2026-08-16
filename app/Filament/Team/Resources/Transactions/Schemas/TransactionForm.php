@@ -29,15 +29,10 @@ class TransactionForm
                     ->getOptionLabelFromRecordUsing(fn ($record) => "{$record->name} {$record->currency->code} {$record->currency->symbol}")
                     ->live()
                     ->afterStateUpdated(fn ($state, Get $get, Set $set) => self::recalcFromBank($state, $get, $set))
+                    ->disabled(fn (string $operation, Get $get) => self::isTransferLeg($operation, $get))
+                    ->dehydrated()
                     ->required(),
 
-                // Select::make('category_id')
-                //     ->inlineLabel()
-                //     ->relationship('category', 'name')
-                //     ->getOptionLabelFromRecordUsing(fn ($record) => "{$record->name} - {$record->type} ")
-                //     ->live()
-                //     ->afterStateUpdated(fn ($state, Set $set) => $set('type', $state ? Category::find($state)?->type : null))
-                //     ->required(),
                 Select::make('category_id')
                     ->inlineLabel()
                     ->relationship('category', 'name')
@@ -46,52 +41,44 @@ class TransactionForm
                     ->afterStateUpdated(fn ($state, Set $set) => $set('type', $state ? Category::find($state)?->type : null))
                     ->visible(fn (string $operation, Get $get) => ! self::isTransferLeg($operation, $get))
                     ->required(fn (string $operation, Get $get) => ! self::isTransferLeg($operation, $get)),
+
                 Hidden::make('type')
-                ->required(),
-
-                // Select::make('currency_id')
-                //     ->relationship('currency', 'code')
-                //     ->hidden()
-                //     ->required(),
-
-                // Select::make('type')
-                //     ->inlineLabel()
-                //     ->options([
-                //         'income' => 'Income',
-                //         'expense' => 'Expense',
-                //         'transfer_out' => 'Transfer out',
-                //         'transfer_in' => 'Transfer in',
-                //     ])
-                //     ->required(),
+                    ->required(),
 
                 TextInput::make('amount')
                     ->inlineLabel()
                     ->mask(RawJs::make('$money($input)'))
                     ->stripCharacters(',')
                     ->required()
-                    ->disabled(fn (string $operation, Get $get) => self::isTransferLeg($operation, $get))
-                    ->dehydrated()
                     ->numeric()
                     ->live(onBlur: true)
-                    ->afterStateUpdated(fn (Get $get, Set $set) => self::recalcFromBank($get('bank_id'), $get, $set)),
+                    ->afterStateUpdated(fn (Get $get, Set $set) => self::recalcFromBank($get('bank_id'), $get, $set))
+                    ->disabled(fn (string $operation, Get $get) => self::isTransferLeg($operation, $get))
+                    ->dehydrated(),
 
                 TextInput::make('rate_to_base')
                     ->inlineLabel()
                     ->required()
                     ->numeric()
+                    ->disabled(fn (string $operation, Get $get) => self::isTransferLeg($operation, $get))
+                    ->dehydrated()
                     ->helperText('Filled automatically from the bank rate. Can be corrected manually if needed (e.g. old transactions)'),
 
                 TextInput::make('base_amount')
                     ->inlineLabel()
-                     ->helperText(fn () => 'Automatically converted to your base currency ('.Filament::getTenant()->baseCurrency->code.'). Only edit to correct an old transaction.')
+                    ->helperText(fn () => 'Automatically converted to your base currency ('.Filament::getTenant()->baseCurrency->code.'). Only edit to correct an old transaction.')
                     ->required()
-                    ->numeric(),
+                    ->numeric()
+                    ->disabled(fn (string $operation, Get $get) => self::isTransferLeg($operation, $get))
+                    ->dehydrated(),
 
                 DatePicker::make('date')
                     ->label('Transaction date')
                     ->default('now')
                     ->inlineLabel()
-                    ->required(),
+                    ->required()
+                    ->disabled(fn (string $operation, Get $get) => self::isTransferLeg($operation, $get))
+                    ->dehydrated(),
 
                 Textarea::make('note')
                     ->inlineLabel()
@@ -114,6 +101,11 @@ class TransactionForm
                     ->inlineLabel()
                     ->image(),
             ]);
+    }
+
+    private static function isTransferLeg(string $operation, Get $get): bool
+    {
+        return $operation === 'edit' && ! in_array($get('type'), ['income', 'expense'], true);
     }
 
     private static function recalcFromBank($bankId, Get $get, Set $set): void
@@ -141,10 +133,5 @@ class TransactionForm
 
         $set('rate_to_base', $rateToBase);
         $set('base_amount', bcmul($amount, $rateToBase, 4));
-    }
-
-    private static function isTransferLeg(string $operation, Get $get): bool
-    {
-        return $operation === 'edit' && ! in_array($get('type'), ['income', 'expense'], true);
     }
 }
