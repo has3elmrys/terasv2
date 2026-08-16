@@ -27,6 +27,11 @@ class ListBanks extends ListRecords
         return [
             Action::make('exchange')
                 ->label('Currency Exchange')
+                ->modalHeading('Transfer / Currency Exchange')
+                ->modalDescription('Move money between your own banks. If both banks shares the same currency the rate is 1,
+                 so it works as a plan transfer. Enter the amount that actually landed in the destination bank.')
+                ->modalIcon('heroicon-o-arrows-right-left')
+                ->tooltip('Transfer or exchange money between your own banks')
                 ->form([
                     Select::make('from_bank_id')
                         ->label('From Bank')
@@ -51,17 +56,19 @@ class ListBanks extends ListRecords
                         ->live(onBlur: true)
                         ->afterStateUpdated(fn (Get $get, Set $set) => self::recalcExchangeOut($get, $set)),
 
-                    Radio::make('rate_mode')
-                        ->label('Rate')
-                        ->options(['auto' => 'Pakai rate otomatis', 'manual' => 'Isi rate manual'])
-                        ->default('auto')
+                    Radio::make('override_rate')
+                        ->label('Set the rate manually?')
+                        ->boolean('Yes', 'No')
+                        ->inline()
+                        ->default(0)
+                        ->helperText('No = use the stored daily rate. Pick Yes when a money changer gave you a different rate than the official one.')
                         ->live()
                         ->afterStateUpdated(fn (Get $get, Set $set) => self::recalcExchangeOut($get, $set)),
 
                     TextInput::make('manual_rate')
                         ->label('1 unit "To Bank" = how many units of "From Bank"')
                         ->numeric()
-                        ->visible(fn (Get $get) => $get('rate_mode') === 'manual')
+                        ->visible(fn (Get $get) => (bool) $get('override_rate'))
                         ->live(onBlur: true)
                         ->afterStateUpdated(fn (Get $get, Set $set) => self::recalcExchangeOut($get, $set)),
 
@@ -137,7 +144,7 @@ class ListBanks extends ListRecords
             return;
         }
 
-        if ($get('rate_mode') === 'manual') {
+        if ($get('override_rate')) {
             $rate = $get('manual_rate');
             if (! $rate) {
                 return;

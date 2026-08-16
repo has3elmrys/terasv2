@@ -8,7 +8,9 @@ use App\Models\Transaction;
 use App\Models\User;
 use Filament\Facades\Filament;
 use Livewire\Livewire;
-
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\PermissionRegistrar;
 beforeEach(function () {
     $this->usd = Currency::create([
         'code' => 'USD', 'name' => 'US Dollar', 'symbol' => '$',
@@ -37,6 +39,12 @@ beforeEach(function () {
         'team_id' => $this->team->id, 'user_id' => $this->user->id, 'currency_id' => $this->usd->id,
         'name' => 'Cash USD', 'opening_balance' => '0', 'opening_balance_date' => now(),
     ]);
+
+     $role = Role::findOrCreate('Vault-Admin', 'web');
+    foreach (['ViewAny:Bank', 'View:Bank', 'Create:Bank', 'Update:Bank'] as $permission) {
+        $role->givePermissionTo(Permission::findOrCreate($permission, 'web'));
+    }
+    $this->user->assignRole($role);
 
     $this->actingAs($this->user);
     Filament::setCurrentPanel(Filament::getPanel('team'));
