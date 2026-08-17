@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Http;
 
 it('inverts frankfurter rates (USD-per-unit becomes unit-per-USD) and keeps the quote date', function () {
     Http::fake([
-        'https://api.frankfurter.app/*' => Http::response([
+        'https://api.frankfurter.dev/*' => Http::response([
             'date' => '2026-08-11',
             'rates' => ['IDR' => 0.0001],
         ]),
@@ -19,7 +19,7 @@ it('inverts frankfurter rates (USD-per-unit becomes unit-per-USD) and keeps the 
 
 it('returns an empty array when the request fails, instead of a partial/wrong result', function () {
     Http::fake([
-        'https://api.frankfurter.app/*' => Http::response([], 500),
+        'https://api.frankfurter.dev/*' => Http::response([], 500),
     ]);
 
     $rates = (new FrankfurterRateProvider())->fetch(['IDR']);
@@ -29,7 +29,7 @@ it('returns an empty array when the request fails, instead of a partial/wrong re
 
 it('skips a rate that comes back zero instead of dividing by it', function () {
     Http::fake([
-        'https://api.frankfurter.app/*' => Http::response([
+        'https://api.frankfurter.dev/*' => Http::response([
             'date' => '2026-08-11',
             'rates' => ['IDR' => 0],
         ]),

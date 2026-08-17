@@ -18,7 +18,7 @@ beforeEach(function () {
 
 it('updates the currency rate and logs exchangerates history on a successful fetch', function () {
     Http::fake([
-        'https://api.frankfurter.app/*' => Http::response([
+        'https://api.frankfurter.dev/*' => Http::response([
             'date' => '2026-08-11',
             'rates' => ['IDR' => 0.0001],
         ]),
@@ -43,7 +43,7 @@ it('updates the currency rate and logs exchangerates history on a successful fet
 
 it('NEVER falls back to rate 1 when the provider fails — old rate stays exactly where it was', function () {
     Http::fake([
-        'https://api.frankfurter.app/*' => Http::response([], 500),
+        'https://api.frankfurter.dev/*' => Http::response([], 500),
     ]);
 
     $this->artisan('rates:fetch')->assertExitCode(1);
@@ -58,7 +58,7 @@ it('NEVER falls back to rate 1 when the provider fails — old rate stays exactl
 
 it('leaves the old rate alone when a currency is simply missing from the response', function () {
     Http::fake([
-        'https://api.frankfurter.app/*' => Http::response([
+        'https://api.frankfurter.dev/*' => Http::response([
             'date' => '2026-08-11',
             'rates' => [],
         ]),
