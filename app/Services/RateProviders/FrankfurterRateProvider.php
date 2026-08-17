@@ -2,6 +2,7 @@
 
 namespace App\Services\RateProviders;
 
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
 
 class FrankfurterRateProvider implements RateProvider
@@ -13,10 +14,19 @@ class FrankfurterRateProvider implements RateProvider
 
     public function fetch(array $codes): array
     {
-        $response = Http::timeout(10)->get('https://api.frankfurter.app/latest', [
-            'from' => 'USD',
-            'to' => implode(',', $codes),
-        ]);
+        try {
+            $response = Http::connectTimeout(5)
+                ->timeout(10)
+                ->retry(2, 1000, throw: false)
+                ->get('https://api.frankfurter.dev/v1/latest', [
+                    'from' => 'USD',
+                    'to' => implode(',', $codes),
+                ]);
+        } catch (ConnectionException $e) {
+            report($e);
+
+            return [];
+        }
 
         if (! $response->successful()) {
             return [];
