@@ -22,11 +22,15 @@ protected $signature = 'subscriptions:process';
             ->get();
 
         foreach ($dueSubscriptions as $subscription) {
-            while ($subscription->next_date <= today()) {
-                $this->generateOccurrence($subscription);
-
-                $subscription->next_date = $subscription->nextOccurrenceAfter($subscription->next_date);
-                $subscription->save();
+            try {
+                while ($subscription->next_date <= today()) {
+                    $this->generateOccurrence($subscription);
+                    $subscription->next_date = $subscription->nextOccurrenceAfter($subscription->next_date);
+                    $subscription->save();
+                }
+            } catch (\Throwable $e) {
+                report($e);
+                $this->error("Subscription #{$subscription->id} gagal: {$e->getMessage()}");
             }
         }
     }

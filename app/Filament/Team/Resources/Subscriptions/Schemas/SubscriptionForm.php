@@ -57,6 +57,7 @@ class SubscriptionForm
                     ->inlineLabel()
                     ->required()
                     ->numeric()
+                    ->minValue(1)
                     ->default(1),
 
                 DatePicker::make('start_date')
