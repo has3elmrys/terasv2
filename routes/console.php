@@ -10,8 +10,10 @@ use Illuminate\Support\Facades\Artisan;
 
 Schedule::command('subscriptions:process')
     ->hourly()
-    ->withoutOverlapping(10);
+    ->withoutOverlapping(10)
+    ->appendOutputTo(storage_path('logs/scheduler.log'));
 
 Schedule::command('rates:fetch')
-    ->twiceDaily(7, 22)          // 22:00 WIB ≈ abis ECB publish 16:00 CET
-    ->withoutOverlapping(10);
+    ->twiceDaily(7, 22)
+    ->withoutOverlapping(10)
+    ->appendOutputTo(storage_path('logs/scheduler.log'));
