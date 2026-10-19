@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
         $this->call(CurrencySeeder::class);
 
         User::create([
-            'name' => 'T000',
+            'name' => 'admin',
             'email' => 'admin@example.com',
             'password' => Hash::make('password'),
 
